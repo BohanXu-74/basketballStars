@@ -13,9 +13,6 @@ curry = player.player(100, 100)
 team = pygame.sprite.Group()
 team.add(curry)
 
-
-
-
 running = True
 
 while running:
