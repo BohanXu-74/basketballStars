@@ -23,11 +23,27 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    keys = pygame.key.get_pressed()
+
+    if keys[pygame.K_LEFT]:
+        curry.pointing = "left"
+    elif keys[pygame.K_RIGHT]:
+        curry.pointing = "right"
+    elif keys[pygame.K_UP]:
+        curry.pointing = "up"
+        print("up")
+    elif keys[pygame.K_DOWN]:
+        curry.pointing = "down"
+    else:
+        curry.pointing = None
+
+
     screen.fill((255, 255, 255))
 
     team.draw(screen)
 
     curry.update(dt)
+
 
     pygame.display.flip()
 

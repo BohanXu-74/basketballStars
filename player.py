@@ -29,9 +29,10 @@ class player(pygame.sprite.Sprite):
 
         self.suit = self.costumes
 
-        self.key = ""
-
         self.facing = "right"
+        self.pointing = "right"
+        self.moving = True
+
         self.image = self.costumes["stillup"]
         self.rect = self.image.get_rect(topleft=(x, y))
 
@@ -71,43 +72,58 @@ class player(pygame.sprite.Sprite):
             else:
                 self.image = self.suit["running"]
 
-    def still(self, dt):
+    def still(self):
         self.image = self.suit["still"]
 
-    def move(self, direction, direction2 = ""):
-        if direction == "right":
+    def move(self):
+        if self.facing == "right":
             self.x += self.speed
-        if direction == "left":
+        if self.facing == "left":
             self.x -= self.speed
-        if direction == "up":
-            self.x += self.speed
-        if direction == "down":
-            self.x -= self.speed
+        if self.facing == "up":
+            self.y += self.speed
+        if self.facing == "down":
+            self.y -= self.speed
 
-    def direction(self, facing):
+    def direction(self, facing=None):
+        if facing is not None:
+            self.facing = facing
+
         if facing == "right":
             self.suit = self.costumes
-        else:
+        elif facing == "left":
             self.suit = self.costumesReflected
 
     def control(self):
-        if self.key == "up":
+        if self.pointing == "left":
             self.direction("left")
-            #self.move("left")
+            self.moving = True
+        if self.pointing == "right":
             self.direction("right")
-            #self.move("right")
-        if self.key == "down":
-            self.move(self.facing)
-        if self.key == "left":
-            pass
-        if self.key == "right":
-            pass
+            self.moving = True
+        if self.pointing == "up":
+            self.direction("up")
+            self.moving = True
+        if self.pointing == "down":
+            self.direction("down")
+            self.moving = True
+                
+        if self.pointing == None:
+            self.facing = None
+            self.moving = False
+        self.move()
 
-
+    def animation(self, dt):
+        if self.moving == True:
+            self.running(dt)
+        else:
+            self.still()
     def update(self, dt):
         self.rect.x = self.x
-        self.dribbleRunning(dt)
         self.animateTimer[1] += dt
+        self.control()
+        self.animation(dt)
+        print(self.direction)
                     
         if self.animateTimer[1] >= self.animateSpeed[1]:
             self.animateTimer[1] = 0
